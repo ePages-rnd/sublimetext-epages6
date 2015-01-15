@@ -1,0 +1,110 @@
+[
+    {
+        "id": "tools",
+        "children": [
+            {
+                "caption": "epages6",
+                "children": [
+                    {
+                        "caption": "Reopen current file",
+                        "command": "reopen_current_file"
+                    },
+                    {
+                        "caption": "Open file from clipboard",
+                        "command": "open_file_from_vm_path"
+                    },
+                    {
+                        "caption": "-"
+                    },
+                    {
+                        "caption": "Import xml",
+                        "command": "ep6_tools",
+                        "args": { "tool": ["--import-xml"] }
+                    },
+                    {
+                        "caption": "Delete xml",
+                        "command": "ep6_tools",
+                        "args": { "tool": ["--delete-xml"] }
+                    },
+                    {
+                        "caption": "Import hook",
+                        "command": "ep6_tools",
+                        "args": { "tool": ["--import-hook"] }
+                    },
+                    {
+                        "caption": "Delete hook",
+                        "command": "ep6_tools",
+                        "args": { "tool": ["--delete-hook"] }
+                    },
+                    {
+                        "caption": "-"
+                    },
+                    {
+                        "caption": "Lint file",
+                        "command": "ep6_tools",
+                        "args": { "tool": ["--lint"] }
+                    },
+                    {
+                        "caption": "Lint file (Perl::Critic)",
+                        "command": "ep6_tools",
+                        "args": { "tool": ["--lint", "--lint-option=perlcritic"] }
+                    },
+                    {
+                        "caption": "Tidy file",
+                        "command": "ep6_tools",
+                        "args": { "tool": ["--tidy", "--tidy-option=organize-imports"] }
+                    },
+                    {
+                        "caption": "-"
+                    },
+                    {
+                        "caption": "Restart app server",
+                        "command": "ep6_tools",
+                        "args": { "tool": ["--restart"] }
+                    },
+                    {
+                        "caption": "Restart all",
+                        "command": "ep6_tools",
+                        "args": { "tool": ["--restart-all"] }
+                    },
+                    {
+                        "caption": "-"
+                    },
+                    {
+                        "caption": "Perm all",
+                        "command": "ep6_tools",
+                        "args": { "tool": ["--perm-all"] }
+                    },
+                    {
+                        "caption": "Perm cartridges",
+                        "command": "ep6_tools",
+                        "args": { "tool": ["--perm-cartridges"] }
+                    },
+                    {
+                        "caption": "Perm webroot",
+                        "command": "ep6_tools",
+                        "args": { "tool": ["--perm-webroot"] }
+                    },
+                    {
+                        "caption": "-"
+                    },
+                    {
+                        "caption": "Set debug level to 0",
+                        "command": "ep6_tools",
+                        "args": { "tool": ["--set-debug-level=0"] }
+                    },
+                    {
+                        "caption": "Set debug level to 1",
+                        "command": "ep6_tools",
+                        "args": { "tool": ["--set-debug-level=1"] }
+                    },
+                    {
+                        "caption": "Set debug level to 2",
+                        "command": "ep6_tools",
+                        "args": { "tool": ["--set-debug-level=2"] }
+                    }
+                ]
+            }
+        ]
+    }
+]

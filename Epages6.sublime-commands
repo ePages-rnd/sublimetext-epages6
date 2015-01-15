@@ -1,0 +1,85 @@
+[
+    {
+        "caption": "Reopen current file",
+        "command": "reopen_current_file"
+    },
+    {
+        "caption": "Open file from clipboard",
+        "command": "open_file_from_vm_path"
+    },
+    {
+        "caption": "Epages: Import xml",
+        "command": "ep6_tools",
+        "args": { "tool": ["--import-xml"] }
+    },
+    {
+        "caption": "Epages: Delete xml",
+        "command": "ep6_tools",
+        "args": { "tool": ["--delete-xml"] }
+    },
+    {
+        "caption": "Epages: Import hook",
+        "command": "ep6_tools",
+        "args": { "tool": ["--import-hook"] }
+    },
+    {
+        "caption": "Epages: Delete hook",
+        "command": "ep6_tools",
+        "args": { "tool": ["--delete-hook"] }
+    },
+    {
+        "caption": "Epages: Lint file",
+        "command": "ep6_tools",
+        "args": { "tool": ["--lint"] }
+    },
+    {
+        "caption": "Epages: Lint file (Perl::Critic)",
+        "command": "ep6_tools",
+        "args": { "tool": ["--lint", "--lint-option=perlcritic"] }
+    },
+    {
+        "caption": "Epages: Tidy file",
+        "command": "ep6_tools",
+        "args": { "tool": ["--tidy", "--tidy-option=organize-imports"] }
+    },
+    {
+        "caption": "Epages: Restart app server",
+        "command": "ep6_tools",
+        "args": { "tool": ["--restart"] }
+    },
+    {
+        "caption": "Epages: Restart all",
+        "command": "ep6_tools",
+        "args": { "tool": ["--restart-all"] }
+    },
+    {
+        "caption": "Epages: Perm all",
+        "command": "ep6_tools",
+        "args": { "tool": ["--perm-all"] }
+    },
+    {
+        "caption": "Epages: Perm cartridges",
+        "command": "ep6_tools",
+        "args": { "tool": ["--perm-cartridges"] }
+    },
+    {
+        "caption": "Epages: Perm webroot",
+        "command": "ep6_tools",
+        "args": { "tool": ["--perm-webroot"] }
+    },
+    {
+        "caption": "Epages: Set debug level to 0",
+        "command": "ep6_tools",
+        "args": { "tool": ["--set-debug-level=0"] }
+    },
+    {
+        "caption": "Epages: Set debug level to 1",
+        "command": "ep6_tools",
+        "args": { "tool": ["--set-debug-level=1"] }
+    },
+    {
+        "caption": "Epages: Set debug level to 2",
+        "command": "ep6_tools",
+        "args": { "tool": ["--set-debug-level=2"] }
+    },
+]

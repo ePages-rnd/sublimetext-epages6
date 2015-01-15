@@ -1,0 +1,10 @@
+{
+    "vms": {
+        "jgratz-vm1": {
+            "description": "",
+            "cartridges": "/Users/jgratz/Developer/epages6/Cartridges",
+            "storetypes": "/Volumes/WebRoot/StoreTypes",
+            "logs": "/Volumes/eproot/Shared/Log"
+        }
+    }
+}
