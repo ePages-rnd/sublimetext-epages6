@@ -4,8 +4,13 @@ import re
 
 ep6_settings = sublime.load_settings('Epages6.sublime-settings')
 
-def ep6tools(view, tool):
-    cmd = ['perl', ep6_settings.get('path')]
+def ep6tools(view, tool, quote = False):
+    cmd = ['perl']
+    path = ep6_settings.get('path')
+
+    if quote: path = '"' + path + '"'
+
+    cmd.append(path)
 
     if ep6_settings.get('verbose'):
         cmd.append('--verbose')
@@ -18,6 +23,9 @@ def ep6tools(view, tool):
 
     return cmd
 
+def execute(cmd):
+    # TODO: maybe use sys.stdout.encoding instead of utf-8
+    return subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()[0].decode('utf-8').strip()
 
 class Epages6EventListener(sublime_plugin.EventListener):
     def on_post_save_async(self, view):
@@ -29,9 +37,7 @@ class Ep6ToolsCommand(sublime_plugin.WindowCommand):
         cmd = ep6tools(self.window.active_view(), tool)
 
         if shell:
-            (status, output) = subprocess.getstatusoutput(' '.join(cmd))
-            if status == 0:
-                print(output)
+            print(execute(' '.join(cmd)))
         else:
             self.window.run_command('exec', {'cmd': cmd})
 
@@ -42,14 +48,29 @@ class ReopenCurrentFileCommand(sublime_plugin.WindowCommand):
 
 class OpenFileFromVmPathCommand(sublime_plugin.WindowCommand):
     def run(self):
-        vm_path = sublime.get_clipboard()
-        m = re.compile(r"^.*INCLUDE\s(.*?)\s.*$").match(vm_path)
+        # example:
+        # <!-- END INCLUDE /srv/epages/eproot/Cartridges/DE_EPAGES/ShopCSVExportImport/Templates/MBO/MBO.INC-CSVExportImportTabPage.Script.html -->
+        # or:
+        # Use of uninitialized value in string ne at /srv/epages/eproot/Cartridges/DE_EPAGES/Amazon/UI/AmazonOffer.pm line 125.
+        clipboard = sublime.get_clipboard()
+        line = 0
+
+        # is there a "line = $line_number" ?
+        line_regex = re.compile(r"^.*line (\d+).*$").match(clipboard)
+        if line_regex:
+            line = int(line_regex.group(1))
+
+        m = re.compile(r"^.*\s(\/.*?)\s.*$").match(clipboard)
         if m:
-            # print(m.group(1))
-            path = subprocess.getoutput(' '.join(ep6tools(self.window.active_view(), ['--get-file-from-vm-path=' + m.group(1)])))
-            # print(path)
-            self.window.open_file(path)
+            if line > 0:
+                path = execute(' '.join(ep6tools(self.window.active_view(), ['--get-file-from-vm-path=' + m.group(1) + ':' + str(line)], True)))
+                self.window.open_file(path, sublime.ENCODED_POSITION)
+            else:
+                path = execute(' '.join(ep6tools(self.window.active_view(), ['--get-file-from-vm-path=' + m.group(1)], True)))
+                self.window.open_file(path)
 
 
-
-
+class OpenLogCommand(sublime_plugin.WindowCommand):
+    def run(self, log):
+        path = execute(' '.join(ep6tools(self.window.active_view(), ['--get-log=' + log], True)))
+        self.window.open_file(path)

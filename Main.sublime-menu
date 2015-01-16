@@ -17,6 +17,24 @@
                         "caption": "-"
                     },
                     {
+                        "caption": "Open error.log",
+                        "command": "open_log",
+                        "args": { "log": "error" }
+                    },
+                    {
+                        "caption": "Open debug.log",
+                        "command": "open_log",
+                        "args": { "log": "debug" }
+                    },
+                    {
+                        "caption": "Open communication.log",
+                        "command": "open_log",
+                        "args": { "log": "communication" }
+                    },
+                    {
+                        "caption": "-"
+                    },
+                    {
                         "caption": "Import xml",
                         "command": "ep6_tools",
                         "args": { "tool": ["--import-xml"] }

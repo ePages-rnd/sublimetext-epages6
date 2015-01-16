@@ -270,7 +270,7 @@ sub lint {
     if (defined $lint_mode) {
         $mode = $lint_mode;
     }
-    elsif ($file_name_relative_to_eproot =~ m/\.([^\.]+$)/) {
+    elsif ($file_name =~ m/\.([^\.]+$)/) {
         $mode = lc $1;
     }
 
@@ -293,7 +293,7 @@ sub lint {
 sub tidy {
     my $mode;
 
-    if ($file_name_relative_to_eproot =~ m/\.([^\.]+$)/) {
+    if ($file_name =~ m/\.([^\.]+$)/) {
         $mode = lc $1;
     }
 
