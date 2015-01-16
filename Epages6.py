@@ -8,7 +8,8 @@ def ep6tools(view, tool, quote = False):
     cmd = ['perl']
     path = ep6_settings.get('path')
 
-    if quote: path = '"' + path + '"'
+    if quote:
+        path = '"' + path + '"'
 
     cmd.append(path)
 
