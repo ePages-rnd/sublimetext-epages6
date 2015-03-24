@@ -1,28 +1,38 @@
 import sublime, sublime_plugin
-import subprocess
+
+import os
 import re
+import shlex
+import subprocess
 
 ep6_settings = sublime.load_settings('Epages6.sublime-settings')
 
 def ep6tools(view, tool, quote = False):
-    cmd = ['perl']
-    path = ep6_settings.get('path')
-
-    if quote:
-        path = '"' + path + '"'
+    cmd = ['python3']
+    path = shlex.quote(os.path.dirname(os.path.abspath(__file__)) + '/ep6-tools.py')
 
     cmd.append(path)
 
     if ep6_settings.get('verbose'):
         cmd.append('--verbose')
 
-    if view.settings().get('ep6_vm'):
-        cmd.append('--vm=' + view.settings().get('ep6_vm'))
+    if view.settings().get('ep6vm'):
+        settings = view.settings().get('ep6vm')
 
-    cmd.extend(tool)
-    cmd.append(view.file_name())
+        cmd.append('--vm ' + settings['vm'])
+        cmd.append('--user ' + settings['user'])
+        cmd.append('--password ' + settings['password'])
+        cmd.append('--storetypes ' + settings['storetypes'])
+        cmd.append('--cartridges ' + settings['cartridges'])
+        cmd.append('--log ' + settings['log'])
 
-    return cmd
+        cmd.append('--file')
+        cmd.append(shlex.quote(view.file_name()))
+        cmd.extend(tool)
+
+        return cmd
+
+    print('Error: No epages6 VM setting found!')
 
 def execute(cmd):
     # TODO: maybe use sys.stdout.encoding instead of utf-8
