@@ -5,8 +5,6 @@ import re
 import subprocess
 import sys
 
-ep6_settings = sublime.load_settings('Epages6.sublime-settings')
-
 def ep6tools(view, tool, quote = False):
     if view.settings().get('ep6vm'):
         settings = view.settings().get('ep6vm');
@@ -50,8 +48,7 @@ def execute(cmd):
 
 class Epages6EventListener(sublime_plugin.EventListener):
     def on_post_save_async(self, view):
-        if (ep6_settings.get('copy_to_shared')):
-            view.window().run_command('ep6_tools', {'tool': ['--copy-to-shared'], 'shell': True})
+        view.window().run_command('ep6_tools', {'tool': ['--copy-to-shared'], 'shell': True})
 
 class Ep6ToolsCommand(sublime_plugin.WindowCommand):
     def run(self, tool = '', shell = False):
