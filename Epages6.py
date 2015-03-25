@@ -2,59 +2,51 @@ import sublime, sublime_plugin
 
 import os
 import re
-import shlex
 import subprocess
+import sys
 
 ep6_settings = sublime.load_settings('Epages6.sublime-settings')
 
 def ep6tools(view, tool, quote = False):
-    cmd = ['python3']
-    path = os.path.dirname(os.path.abspath(__file__)) + '/ep6-tools.py'
-    # path = shlex.quote(os.path.dirname(os.path.abspath(__file__)) + '/ep6-tools.py')
-    # path = '"' + os.path.dirname(os.path.abspath(__file__)) + '/ep6-tools.py"'
-    # path = shlex.quote(os.path.dirname(os.path.abspath(__file__))) + "/ep6-tools.py"
-
-    cmd.append(path)
-
-    if ep6_settings.get('verbose'):
-        cmd.append('--verbose')
-
     if view.settings().get('ep6vm'):
-        settings = view.settings().get('ep6vm')
+        settings = view.settings().get('ep6vm');
+
+        cmd = ['python3']
+
+        path = os.path.dirname(os.path.abspath(__file__)) + '/ep6-tools.py'
+        cmd.append(path)
 
         cmd.append('--vm')
         cmd.append(settings['vm'])
+
         cmd.append('--user')
         cmd.append(settings['user'])
+
         cmd.append('--password')
         cmd.append(settings['password'])
+
         cmd.append('--storetypes')
         cmd.append(settings['storetypes'])
+
         cmd.append('--cartridges')
         cmd.append(settings['cartridges'])
+
         cmd.append('--log')
         cmd.append(settings['log'])
 
         cmd.append('--file')
         cmd.append(view.file_name())
+
         cmd.extend(tool)
 
         return cmd
 
     else:
-        print('Error: No epages6 VM setting found!')
-
+        sys.exit('Error: No epages6 virtual machine settings found!')
 
 def execute(cmd):
     # TODO: maybe use sys.stdout.encoding instead of utf-8
-
-    print('subprocess check_output')
-    # print(subprocess.check_output('python3 ' + shlex.quote(os.path.dirname(os.path.abspath(__file__)) + '/ep6-tools.py'), shell=True, stderr=subprocess.STDOUT, universal_newlines=True))
-    # return subprocess.check_output(cmd, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
-
-
-
-    return subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()[0].decode('utf-8').strip()
+    return subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()
 
 class Epages6EventListener(sublime_plugin.EventListener):
     def on_post_save_async(self, view):
@@ -65,9 +57,12 @@ class Ep6ToolsCommand(sublime_plugin.WindowCommand):
     def run(self, tool = '', shell = False):
         cmd = ep6tools(self.window.active_view(), tool)
 
+        print('[Started, please wait ...]')
+
         if shell:
-            # print(execute(' '.join(cmd)))
-            print(execute(cmd))
+            result = execute(cmd)
+            print(result[0].decode('utf-8').strip())
+            print(result[1].decode('utf-8').strip())
         else:
             self.window.run_command('exec', {'cmd': cmd})
 
@@ -93,17 +88,13 @@ class OpenFileFromVmPathCommand(sublime_plugin.WindowCommand):
         m = re.compile(r"^.*\s(\/.*?)\s.*$").match(clipboard)
         if m:
             if line > 0:
-                path = execute(' '.join(ep6tools(self.window.active_view(), ['--get-file-from-vm-path=' + m.group(1) + ':' + str(line)], True)))
+                path = execute(ep6tools(self.window.active_view(), ['--get-file-from-vm-path', m.group(1) + ':' + str(line)], True))[0].decode('utf-8').strip()
                 self.window.open_file(path, sublime.ENCODED_POSITION)
             else:
-                path = execute(' '.join(ep6tools(self.window.active_view(), ['--get-file-from-vm-path=' + m.group(1)], True)))
+                path = execute(ep6tools(self.window.active_view(), ['--get-file-from-vm-path', m.group(1)], True))[0].decode('utf-8').strip()
                 self.window.open_file(path)
-
 
 class OpenLogCommand(sublime_plugin.WindowCommand):
     def run(self, log):
-        path = execute(' '.join(ep6tools(self.window.active_view(), ['--get-log=' + log], True)))
+        path = execute(ep6tools(self.window.active_view(), ['--get-log', log], True))[0].decode('utf-8').strip()
         self.window.open_file(path)
-
-# print('subprocess check_output')
-# print(subprocess.check_output(['python3', os.path.dirname(os.path.abspath(__file__)) + '/ep6-tools.py'], stderr=subprocess.STDOUT, universal_newlines=True))

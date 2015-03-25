@@ -4,6 +4,7 @@ import os
 import paramiko
 import re
 import shutil
+import shlex
 
 
 class ep6tools:
@@ -23,8 +24,6 @@ class ep6tools:
 
 
     def execute(self, command):
-        print('[Started, please wait ...]')
-
         try:
            stdin, stdout, stderr = self.client.exec_command(command)
            stdin.close()
@@ -32,8 +31,14 @@ class ep6tools:
            for line in stdout:
                 print(line.strip('\n'))
 
+           for line in stderr:
+                print(line.strip('\n'))
+
         except e:
             print('Error: ' + str(e))
+
+    def execute_with_file(self, command, file):
+        self.execute(command + ' "{}"'.format(self.get_vm_file_path(file)))
 
     def restart(self):
         self.execute('ep6-restart')
@@ -42,34 +47,48 @@ class ep6tools:
         self.execute('ep6-restart-all')
 
     def perm_all(self):
-        pass
+        self.execute('ep6-perm-all')
 
     def perm_cartridges(self):
-        pass
+        self.execute('ep6-perm-cartridges')
 
     def perm_webroot(self):
-        pass
+        self.execute('ep6-perm-webroot')
 
     def import_xml(self, file):
-        pass
+        self.execute_with_file('ep6-import-xml', file)
 
     def import_hook(self, file):
-        pass
+        self.execute_with_file('ep6-import-hook', file)
 
     def delete_xml(self, file):
-        pass
+        self.execute_with_file('ep6-delete-xml', file)
 
     def delete_hook(self, file):
-        pass
+        self.execute_with_file('ep6-delete-hook', file)
 
     def lint(self, file, lint_mode, lint_option):
         file = file.replace("\\", "/")
-        vm_file = self.get_vm_file_path(file)
-        print('vm_file' + vm_file)
-        self.execute("ep6-tlec < " + vm_file)
+
+        if lint_mode == None:
+            file_name, lint_mode = os.path.splitext(file)
+            lint_mode = lint_mode.replace('.', '').lower()
+
+        if lint_mode == 'html':
+            self.execute("ep6-tlec < " + self.get_vm_file_path(file))
+            return
+
+        if lint_mode in ['pm', 'pl', 't']:
+            if lint_option in ['critic', 'perlcritic']:
+                self.execute_with_file('ep6-perlcritic', file)
+            else:
+                self.execute_with_file('ep6-perlc', file)
 
     def tidy(self, file, tidy_option):
-        pass
+        file = file.replace("\\", "/")
+
+        if tidy_option in ['organize-imports']:
+            self.execute_with_file('ep6-organize-imports', file)
 
     def copy_to_shared(self, file, storetypes):
         shared_file = None;
@@ -95,19 +114,20 @@ class ep6tools:
         return path_to_storetypes + '/' + storetypes[-1]
 
     def set_debug_level(self, debug_level):
-        pass
+        self.execute('ep6-set-debug-level {}'.format(debug_level))
 
-    def get_log(self, log):
-        pass
+    def get_log(self, logpath, log):
+        print('{}/{}.log'.format(logpath, log))
 
-    def get_file_from_vm_path(self):
-        pass
+    def get_file_from_vm_path(self, vm_file, cartridges):
+        m = re.compile(r".*\/Cartridges(\/.+)$").match(vm_file)
+        if m:
+            print(cartridges + m.group(1))
 
     def get_vm_file_path(self, file):
         m = re.compile(r".*\/(Cartridges\/.+)$").match(file)
         if m:
             return "/srv/epages/eproot/" + m.group(1)
-
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
@@ -168,16 +188,16 @@ if args.perm_webroot:
     ep6tool.perm_webroot()
 
 if args.import_xml:
-    ep6tool.import_xml()
+    ep6tool.import_xml(args.file)
 
 if args.import_hook:
-    ep6tool.import_hook()
+    ep6tool.import_hook(args.file)
 
 if args.delete_xml:
-    ep6tool.delete_xml()
+    ep6tool.delete_xml(args.file)
 
 if args.delete_hook:
-    ep6tool.delete_hook()
+    ep6tool.delete_hook(args.file)
 
 if args.lint:
     ep6tool.lint(args.file, args.lint_mode, args.lint_option)
@@ -189,10 +209,10 @@ if args.copy_to_shared:
     ep6tool.copy_to_shared(args.file, args.storetypes)
 
 if args.set_debug_level:
-    ep6tool.set_debug_level()
+    ep6tool.set_debug_level(args.set_debug_level)
 
 if args.get_log:
-    ep6tool.get_log(args.get_log)
+    ep6tool.get_log(args.log, args.get_log)
 
 if args.get_file_from_vm_path:
-    ep6tool.get_file_from_vm_path()
+    ep6tool.get_file_from_vm_path(args.get_file_from_vm_path, args.cartridges)
