@@ -4,7 +4,7 @@ Development tools for epages6.
 
 ## Install
 
-Install via Package Manager. To add our repository, have a look (here)[https://github.com/ePages-rnd/sublimetext-plugins].
+Install via Package Manager. To add our repository, have a look [here](https://github.com/ePages-rnd/sublimetext-plugins).
 
 ## Configure
 
