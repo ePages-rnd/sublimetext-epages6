@@ -13,7 +13,7 @@ def ep6tools(view, tool, quote = False):
 
         cmd = ['python3']
 
-        path = os.path.dirname(os.path.abspath(__file__)) + '/ep6-tools.py'
+        path = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/') + '/ep6-tools.py'
         cmd.append(path)
 
         cmd.append('--vm')

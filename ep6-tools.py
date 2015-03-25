@@ -97,9 +97,10 @@ class ep6tools:
         if m:
             shared_file = self.store(storetypes) + "/Store" + m.group(1)
 
-        m = re.compile(r".*Cartridges/(.*)/Data/javascript(.*)$").match(file)
-        if m:
-            shared_file = self.store(storetypes) + "/Store/javascript/epages/cartridges/" + m.group(1).lower() + m.group(2)
+        # Dojo javascript needs Shrinksafe.pm to be build
+        # m = re.compile(r".*Cartridges/(.*)/Data/javascript(.*)$").match(file)
+        # if m:
+        #     shared_file = self.store(storetypes) + "/Store/javascript/epages/cartridges/" + m.group(1).lower() + m.group(2)
 
         if shared_file is not None:
             print('copy ' + file + ' to ' + shared_file)
@@ -165,6 +166,8 @@ def parse_arguments():
 
     parser.add_argument("--get-log")
     parser.add_argument("--get-file-from-vm-path")
+
+    parser.add_argument("--ignore-me")
 
     return parser.parse_args()
 
