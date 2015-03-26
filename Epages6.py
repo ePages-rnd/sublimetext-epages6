@@ -44,11 +44,16 @@ def ep6tools(view, tool, quote = False):
 
 def execute(cmd):
     # TODO: maybe use sys.stdout.encoding instead of utf-8
-    return subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()
+    return subprocess.Popen(cmd,  shell = True, stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()
 
 class Epages6EventListener(sublime_plugin.EventListener):
     def on_post_save_async(self, view):
-        view.window().run_command('ep6_tools', {'tool': ['--copy-to-shared'], 'shell': True})
+        if view.settings().get('ep6vm'):
+            file_name = view.file_name()
+            file_name, file_ext = os.path.splitext(file_name)
+            file_ext = file_ext.replace('.', '').lower()
+            if file_ext in ['js', 'css', 'less', 'html']:
+                view.window().run_command('ep6_tools', {'tool': ['--copy-to-shared'], 'shell': True})
 
 class Ep6ToolsCommand(sublime_plugin.WindowCommand):
     def run(self, tool = '', shell = False):

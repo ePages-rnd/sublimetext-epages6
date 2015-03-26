@@ -9,33 +9,35 @@ import shlex
 
 class ep6tools:
     def __init__(self, vm, user, password):
-       self.vm = vm
-       self.client = None
+        self.vm = vm
+        self.client = None
 
-       try:
-           self.client = paramiko.SSHClient()
-           self.client.load_system_host_keys()
-           self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        if vm != None:
+            try:
+                self.client = paramiko.SSHClient()
+                self.client.load_system_host_keys()
+                self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-           self.client.connect(self.vm, username=user, password=password)
+                self.client.connect(self.vm, username=user, password=password)
 
-       except e:
-           print('Error: ' + str(e))
+            except e:
+                print('Error: ' + str(e))
 
 
     def execute(self, command):
-        try:
-           stdin, stdout, stderr = self.client.exec_command(command)
-           stdin.close()
+        if self.vm != None:
+            try:
+               stdin, stdout, stderr = self.client.exec_command(command)
+               stdin.close()
 
-           for line in stdout:
-                print(line.strip('\n'))
+               for line in stdout:
+                    print(line.strip('\n'))
 
-           for line in stderr:
-                print(line.strip('\n'))
+               for line in stderr:
+                    print(line.strip('\n'))
 
-        except e:
-            print('Error: ' + str(e))
+            except e:
+                print('Error: ' + str(e))
 
     def execute_with_file(self, command, file):
         self.execute(command + ' "{}"'.format(self.get_vm_file_path(file)))
@@ -91,21 +93,23 @@ class ep6tools:
             self.execute_with_file('ep6-organize-imports', file)
 
     def copy_to_shared(self, file, storetypes):
-        shared_file = None;
-        file = file.replace("\\", "/")
-        m = re.compile(r".*Cartridges.*Data/Public(.*)$").match(file)
-        if m:
-            shared_file = self.store(storetypes) + "/Store" + m.group(1)
+        if os.path.exists(storetypes):
+            shared_file = None;
+            file = file.replace("\\", "/")
+            m = re.compile(r".*Cartridges.*Data/Public(.*)$").match(file)
+            if m:
+                shared_file = self.store(storetypes) + "/Store" + m.group(1)
 
-        # Dojo javascript needs Shrinksafe.pm to be build
-        # m = re.compile(r".*Cartridges/(.*)/Data/javascript(.*)$").match(file)
-        # if m:
-        #     shared_file = self.store(storetypes) + "/Store/javascript/epages/cartridges/" + m.group(1).lower() + m.group(2)
+            # Dojo javascript needs Shrinksafe.pm to be build
+            # m = re.compile(r".*Cartridges/(.*)/Data/javascript(.*)$").match(file)
+            # if m:
+            #     shared_file = self.store(storetypes) + "/Store/javascript/epages/cartridges/" + m.group(1).lower() + m.group(2)
+            if shared_file is not None:
+                print('copy ' + file + ' to ' + shared_file)
 
-        if shared_file is not None:
-            print('copy ' + file + ' to ' + shared_file)
-
-            shutil.copyfile(file, shared_file)
+                shutil.copyfile(file, shared_file)
+        else:
+            print('StoreTypes folder not found: ' + storetypes)
 
     def store(self, path_to_storetypes):
         # /Users/emueller/VM-Mounts/emueller-vm-1/Shared/WebRoot/StoreTypes/6.15.2/Store/lib/package-bo.js
