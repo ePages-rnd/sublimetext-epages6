@@ -48,7 +48,7 @@ def execute(cmd):
 
 class Epages6EventListener(sublime_plugin.EventListener):
     def on_post_save_async(self, view):
-        if view.settings().get('ep6vm'):
+        if view.settings().get('ep6vm') and view.settings().get('ep6vm')['copy_to_shared']:
             file_name = view.file_name()
             file_name, file_ext = os.path.splitext(file_name)
             file_ext = file_ext.replace('.', '').lower()

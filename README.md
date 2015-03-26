@@ -57,7 +57,8 @@ Go to the project settings `Project > Edit Project` and add the `settings` key l
             "password": "qwert6",
             "storetypes": "/Volumes/WebRoot/StoreTypes",
             "user": "root",
-            "vm": "jgratz-vm1"
+            "vm": "jgratz-vm1",
+            "copy_to_shared": true
         }
     }
 }
@@ -78,7 +79,8 @@ or (Windows):
             "password": "qwert6",
             "storetypes": "C:\\SharedFolders\\vm1\\StoreTypes",
             "user": "root",
-            "vm": "ahartmann-vm1"
+            "vm": "ahartmann-vm1",
+            "copy_to_shared": true
         }
     }
 }

@@ -18,9 +18,9 @@ class ep6tools:
                 self.client.load_system_host_keys()
                 self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-                self.client.connect(self.vm, username=user, password=password)
+                self.client.connect(self.vm, username=user, password=password, timeout=1.0)
 
-            except e:
+            except Exception as e:
                 print('Error: ' + str(e))
 
 
@@ -36,7 +36,7 @@ class ep6tools:
                for line in stderr:
                     print(line.strip('\n'))
 
-            except e:
+            except Exception as e:
                 print('Error: ' + str(e))
 
     def execute_with_file(self, command, file):
@@ -105,6 +105,9 @@ class ep6tools:
             # if m:
             #     shared_file = self.store(storetypes) + "/Store/javascript/epages/cartridges/" + m.group(1).lower() + m.group(2)
             if shared_file is not None:
+                file = os.path.normpath(file)
+                shared_file = os.path.normpath(shared_file)
+
                 print('copy ' + file + ' to ' + shared_file)
 
                 shutil.copyfile(file, shared_file)
