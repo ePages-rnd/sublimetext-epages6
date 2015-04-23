@@ -133,7 +133,7 @@ class ep6tools:
             print(cartridges + m.group(1))
 
     def get_vm_file_path(self, file):
-        m = re.compile(r".*\/(Cartridges\/.+)$").match(file)
+        m = re.compile(r".*\/(Cartridges\/.+)$").match(file.replace('\\','/'))
         if m:
             return "/srv/epages/eproot/" + m.group(1)
 
