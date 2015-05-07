@@ -37,6 +37,10 @@ Unfortunately there are two major upstream bugs, so you have to fix them manuall
 - Change `%APPDATA%\Python\Python34\site-packages\Crypto\Random\OSRNG\nt.py` as described [here](https://github.com/dlitz/pycrypto/commit/10abfc8633bac653eda4d346fc051b2f07554dcd#diff-f14623ba167ec6ff27cbf0e005d732a7)
 - Change `%APPDATA%\Python\Python34\site-packages\paramiko\_winapi.py` as described [here](https://github.com/paramiko/paramiko/issues/461)
 
+### Install epages6-cli on your virtual machine
+
+Head to [this repository](https://github.com/jgratz4epages/epages6-cli) and follow the instructions there. Repeat for every VM you want to use with this plugin.
+
 ## Configure
 
 If not already done, create a project for each epages6 virtual machine you want to use with this plugin.
